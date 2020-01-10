@@ -1,4 +1,4 @@
-    dcl-pi WMSZZZR;
+    dcl-pi Check_Email;
            In_Email_Address Char(25) Dim(999);
            Out_Unique_Count Zoned(2:0);
        End-Pi;
