@@ -1,0 +1,74 @@
+    dcl-pi WMSZZZR;
+           In_Email_Address Char(25) Dim(999);
+           Out_Unique_Count Zoned(2:0);
+       End-Pi;
+
+       // Define Various Fields
+         dcl-s Index zoned(5:0);
+         dcl-s Found_Plus zoned(2:0);
+         dcl-s Found_At Zoned(2:0);
+         Dcl-s Temp_Email Char(25);
+         Dcl-s Temp_Email2 Char(25);
+         DCL-s ValidEmails Char(25) Dim(999);
+         DCL-s Count zoned(5:0);
+         dcl-s idx zoned (5:0);
+         dcl-s idx2 zoned(5:0);
+         dcl-s Found_Period zoned(2:0);
+
+      //**********************************************************
+      //**                    Main Program                      **
+      //**********************************************************
+
+       Index = 1;
+       Dow In_Email_Address(index) <> ' ' or
+           Index < 999;
+           Exsr Check_Email;
+           index +=1;
+       ENDDO;
+       Out_Unique_Count = Count;
+
+       *inlr = *on;
+
+      //**********************************************************
+      //**               Check_Email Subroutine                 **
+      //**  test.email+spam@gmail.com
+      //**********************************************************
+        Begsr Check_Email;
+
+        Clear Found_Plus;
+        Clear Found_At;
+        Clear Found_Period;
+
+        Clear Temp_Email;
+        Clear Idx;
+
+        Found_Plus = %Scan('+':In_Email_Address(Index):1);
+        Found_At   = %Scan('@':In_Email_Address(Index):1);
+
+        If Found_Plus <> *Zero;
+          Temp_Email=%Subst(in_Email_Address(Index)
+            :1:Found_Plus-1) +
+            %subst(in_email_address(index):Found_at:
+            25-Found_At+1);
+        Else;
+          Temp_Email = In_Email_Address(Index);
+        Endif;
+
+        // Remove . Before @
+
+        Temp_Email2 = %ScanRpl('.' : '' : temp_email : 1 : Found_At);
+
+        IDX = 0;
+        idx2 = 0;
+        IDX = %Lookup(TEMP_Email2:ValIDEMAILS);
+        If IDX = *ZERO;
+               Idx2 = 0;
+               idx2 = %Lookup(*blanks:ValIDEMAILS);
+               ValidEmails(idx2) = Temp_Email2;
+               Count += 1;
+        Endif;
+
+
+        ENDSR;
+
+                                                                                                                              
